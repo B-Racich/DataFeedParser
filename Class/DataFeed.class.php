@@ -18,6 +18,7 @@ class DataFeed {
   public $data = array();
   public $callbacks = array();
   public $args = array();
+  public $configs;
 
   /**
    * Config Variables
@@ -131,6 +132,12 @@ class DataFeed {
         $lastBatch++;
       }
     }
+    // Apply fixes and callbacks for last batch (or first batch if under batch limit)
+    $this->applyFixes($this->data);
+    if(isset($callback) && is_callable($callback)) {
+      $callback($this->data);
+    } 
+    $this->data = array();
   }
 
   /**
@@ -217,7 +224,7 @@ class DataFeed {
   }
 
   /**
-   * Wrapper for post config fixes
+   * Wrapper for post config fixes + callbacks
    */
   function applyFixes(&$items) {
     $this->renameFields();
@@ -324,7 +331,7 @@ class DataFeed {
    * Clear a callback from a node
    */
   function clearCallback($key) {
-    $this->callback[$key] = null;
+    $this->callbacks[$key] = null;
   }
 
   /**

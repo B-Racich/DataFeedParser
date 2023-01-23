@@ -6,38 +6,32 @@ $rustart = getrusage();
 
 $dataFeed = new DataFeed();
 
-// $stuff = 'yeet';
-$args = ['yup' => 'neat'];
+$args = [];
 
-$dataFeed->setConfig('data/config.json');
-
-// $dataFeed->getFeed();
+$dataFeed->setConfig('./data/config.json');
 
 
-$dataFeed->setFeed('psd7003.xml');
-$dataFeed->setFile('data/psd7003.xml');
-$dataFeed->setNode('ProteinEntry');
+$dataFeed->setFeed('feed.xml');
+$dataFeed->setFile('data/feed.xml');
+$dataFeed->setNode('book');
 $dataFeed->setBatchSize(100);
 $dataFeed->setLimit(1000);
 
-$dataFeed->setCallback('status',
+// Here we attach a callback to a specific node found in the xml. IE publish_date
+$dataFeed->setCallback('publish_date',
   function(&$data, $index, $value) {
-    return strtoupper($value);
+    $date = new DateTime($value);
+    $new_date = $date->format('Y-m-d H:i:s');
+    return strtoupper($new_date);
   }
 );
 
-$dataFeed->setCallback('source',
-  function(&$data, $index, $value) use ($args) {
-    return $value.' '.(array_key_exists('common', $data[$index]['organism']) ? $data[$index]['organism']['common'] : '').' '.$args['yup'];
-  },
-);
-
-$dataFeed->walkFeed(function(&$data) use ($args) {
+// Here we can supply a function to be called as the feed is walked (useful for debugging here)
+$dataFeed->walkFeed(function(&$data) {
   // echo "chunk".PHP_EOL;
   print_r($data);
-  print_r($args);
-  test();
 });
+
 
 echo "done".PHP_EOL;
 

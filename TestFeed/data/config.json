@@ -1,5 +1,5 @@
 {
-  "skipEmptyFields": false,
-  "skipFields": ["feature.seq-spec"],
-  "renameFields": [{"header.accession": "accession0"}, {"keywords.keyword": "keyword0"}]
+  "skipEmptyFields": true,
+  "skipFields": [],
+  "renameFields": [{"stuff.thing1": "IchangedThis"}]
 }
